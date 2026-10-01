@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><style>path{fill:%2338bdf8;}.lock{fill:%230d1117;}</style><path d='M 50 2 L 10 20 L 10 50 C 10 77 50 98 50 98 C 50 98 90 77 90 50 L 90 20 Z'/><path class='lock' d='M 50 45 L 50 55 C 50 60 55 65 60 65 L 60 70 L 40 70 L 40 65 C 45 65 50 60 50 55 Z' transform='translate(-5, 0)'/><path class='lock' d='M 50 35 C 50 30 45 30 45 30 L 45 35 C 45 40 50 40 50 40 L 50 45 C 50 45 55 45 55 40 C 55 35 50 35 50 35 Z'/></svg>" type="image/svg+xml">
+    
+    <title>CipherGuard | Kolay ve Güçlü Siber Güvenlik</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary-color: #0d1117;
+            --accent-color: #38bdf8;
+            --secondary-accent: #10b981;
+            --text-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .glow-button {
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color);
+            min-height: 48px;
+        }
+        .glow-button:hover {
+            box-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color), 0 0 30px rgba(56, 189, 248, 0.5);
+        }
+        .card-bg {
+            background-color: #1a202c;
+            border-left: 4px solid var(--secondary-accent);
+        }
+        .modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        input[type="text"], input[type="password"] {
+            outline: none;
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+            min-height: 44px;
+        }
+        .fingerprint-scanner {
+            width: 120px;
+            height: 120px;
+            border: 4px solid var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: pulse-ring 2s infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(56, 189, 248, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+        .scanning {
+            animation: scanning 1s infinite alternate;
+        }
+        @keyframes scanning {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        #ai-chat-window {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: calc(100% - 40px);
+            max-width: 400px;
+            height: 500px;
+            background-color: #1a202c;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        #chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            border-bottom: 1px solid #0d1117;
+        }
+        .user-message {
+            background-color: #38bdf8;
+            color: #0d1117;
+            align-self: flex-end;
+            border-radius: 10px 10px 0 10px;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        .ai-message {
+            background-color: #0d1117;
+            color: var(--text-color);
+            border-radius: 10px 10px 10px 0;
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+        #ai-chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1001;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.7);
+            padding: 16px; 
+        }
+        
+        .content-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            height: 0;
+            overflow: hidden;
+        }
+        .content-visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transition: opacity 0.5s ease;
+            height: auto;
+        }
+        
+        @media (max-width: 640px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+        }
+        
+        .feature-card-corporate {
+            border-left: 4px solid #38bdf8;
+            background-color: #1e293b;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card-individual {
+            border-left: 4px solid #10b981;
+            background-color: #164e63;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card-corporate:hover {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            transform: translateY(-3px);
+        }
+        .feature-card-individual:hover {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Üst Gezinme Çubuğu -->
+    <header id="main-header" class="p-4 border-b border-gray-800 sticky top-0 z-50 bg-opacity-95 backdrop-blur-sm content-hidden">
+        <div class="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+            <a href="#" class="flex items-center space-x-2 text-xl sm:text-2xl font-extrabold text-white">
+                <i data-lucide="shield-check" class="w-6 h-6 sm:w-7 sm:h-7 text-green-400"></i>
+                <span>CipherGuard</span>
+            </a>
+
+            <div class="flex space-x-2">
+                <button onclick="handleLogout()" class="flex items-center space-x-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-lg text-sm sm:text-base">
+                    <i data-lucide="log-out" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <span class="hidden sm:inline">Çıkış Yap</span>
+                    <span class="inline sm:hidden">Çıkış</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ana Karşılama Alanı (Sadeleştirilmiş Metinler) -->
+    <main id="main-content" class="content-hidden">
+        <section class="max-w-7xl mx-auto py-12 sm:py-16 px-4 text-center">
+            <h1 class="hero-title text-3xl sm:text-5xl md:text-6xl font-extrabold text-white mb-4 sm:mb-6 leading-tight">
+                DİJİTAL DÜNYADA <span class="text-green-400">KOLAY VE TAM KORUMA</span>
+            </h1>
+            <p class="hero-subtitle text-base sm:text-lg text-gray-300 mb-8 sm:mb-10 max-w-3xl mx-auto leading-relaxed">
+                **CipherGuard**, karmaşık güvenlik kafa karışıklıklarını ortadan kaldırır. Şifrelerinizi, kişisel verilerinizi ve şirket bilgilerinizi virüslere, dolandırıcılara ve veri hırsızlarına karşı görünmez bir kalkanla korur.
+            </p>
+            
+            <!-- Özet Hizmet Kartları -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 sm:mt-12">
+                <div class="bg-gray-800 p-6 rounded-xl shadow-2xl transition duration-300 hover:scale-[1.02] card-bg border-none">
+                    <i data-lucide="building-2" class="w-10 h-10 text-blue-400 mx-auto mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Şirketler İçin Koruma</h3>
+                    <p class="text-gray-400 text-sm">Şirketinizin bilgisayarlarını ve veri tabanlarını siber saldırılardan korur, işinizin durmasını engeller.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl shadow-2xl transition duration-300 hover:scale-[1.02] card-bg border-none">
+                    <i data-lucide="user-cog" class="w-10 h-10 text-green-400 mx-auto mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Kişisel Gizlilik</h3>
+                    <p class="text-gray-400 text-sm">İnternette gezinirken kişisel bilgilerinizi, fotoğraflarınızı ve şifrelerinizi yabancı gözlerden gizler.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl shadow-2xl transition duration-300 hover:scale-[1.02] card-bg border-none">
+                    <i data-lucide="key" class="w-10 h-10 text-red-400 mx-auto mb-4"></i>
+                    <h3 class="text-xl font-bold text-white mb-2">Güçlü Şifreleme</h3>
+                    <p class="text-gray-400 text-sm">Tüm dosyalarınızı özel dijital kilitlerle saklar; şifreniz olmadan kimse verilerinize erişemez.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detaylı Özellikler Bölümü (Sade Anlatım) -->
+        <section class="max-w-7xl mx-auto py-12 sm:py-16 px-4">
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-center text-white mb-8 sm:mb-12">CipherGuard Sizi Nasıl Korur?</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+                
+                <!-- Kurumsal Koruma Özellikleri -->
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-blue-400 border-b border-gray-700 pb-2">Şirketler İçin Güvenlik Çözümleri</h3>
+                    <ul class="space-y-4">
+                        
+                        <li class="p-5 rounded-xl transition duration-300 feature-card-corporate">
+                            <div class="flex items-start space-x-4">
+                                <i data-lucide="cloud-lightning" class="w-7 h-7 text-green-400 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Anlık Saldırı Engelleme</h4>
+                                    <p class="text-gray-300 text-sm">
+                                        Sistemdeki şüpheli hareketleri 24 saat izler. Bir saldırgan sisteminize sızmaya çalıştığında bunu siz fark etmeden otomatik olarak engeller.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="p-5 rounded-xl transition duration-300 feature-card-corporate">
+                            <div class="flex items-start space-x-4">
+                                <i data-lucide="shield-half" class="w-7 h-7 text-green-400 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Tüm Cihazlarda Virüs Kalkanı</h4>
+                                    <p class="text-gray-300 text-sm">
+                                        Ofis bilgisayarları, telefonlar ve sunucular fidye yazılımlarına ve zararlı programlara karşı sürekli kontrol altında tutulur.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="p-5 rounded-xl transition duration-300 feature-card-corporate">
+                            <div class="flex items-start space-x-4">
+                                <i data-lucide="layers" class="w-7 h-7 text-green-400 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">"Önce Doğrula" Erişim Mantığı</h4>
+                                    <p class="text-gray-300 text-sm">
+                                        Hiçbir kullanıcıya veya cihaza sorgusuz güvenilmez. Her giriş denemesi tek tek kontrol edilerek yetkisiz kişilerin içeri girmesi önlenir.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="p-5 rounded-xl transition duration-300 feature-card-corporate">
+                            <div class="flex items-start space-x-4">
+                                <i data-lucide="key-square" class="w-7 h-7 text-green-400 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Yasalara Uyumlu Veri Koruması</h4>
+                                    <p class="text-gray-300 text-sm">
+                                        Müşteri ve şirket verileriniz KVKK ve uluslararası gizlilik standartlarına uygun şekilde otomatik olarak kilitlenir.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+                
+                <!-- Bireysel Koruma Özellikleri -->
+                <div>
+                    <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-green-400 border-b border-gray-700 pb-2">Bireysel Kullanıcı Koruması</h3>
+                    <ul class="space-y-4">
+
+                        <li class="p-5 rounded-xl transition duration-300 feature-card-individual">
+                            <div class="flex items-start space-x-4">
+                                <i data-lucide="zap" class="w-7 h-7 text-blue-400 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Gizli İnternet Bağlantısı (VPN)</h4>
+                                    <p class="text-gray-300 text-sm">
+                                        İnternette gezinirken konumunuzu ve kimliğinizi gizler. Takip edilmeden güvenle gezinmenizi sağlar.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="p-5 rounded-xl transition duration-300 feature-card-individual">
+                            <div class="flex items-start space-x-4">
+                                <i data-lucide="fingerprint" class="w-7 h-7 text-blue-400 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">İki Adımlı Güvenli Giriş</h4>
+                                    <p class="text-gray-300 text-sm">
+                                        Şifreniz başkalarının eline geçse bile Parmak İzi veya Telefona Gelen Kod olmadan hesabınıza kimse erişemez.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="p-5 rounded-xl transition duration-300 feature-card-individual">
+                            <div class="flex items-start space-x-4">
+                                <i data-lucide="shield-off" class="w-7 h-7 text-blue-400 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Sahte Site ve Dolandırıcılık Engelleyici</h4>
+                                    <p class="text-gray-300 text-sm">
+                                        Sizi kandırmaya çalışan sahte banka sitelerini, şüpheli e-postaları ve tehlikeli bağlantıları anında engeller.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="p-5 rounded-xl transition duration-300 feature-card-individual">
+                            <div class="flex items-start space-x-4">
+                                <i data-lucide="lock" class="w-7 h-7 text-blue-400 flex-shrink-0 mt-1"></i>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-1">Kaybolmayan Güvenli Dosya Yedekleme</h4>
+                                    <p class="text-gray-300 text-sm">
+                                        Önemli fotoğraflarınızı ve belgelerinizi çalınmaya veya silinmeye karşı korumalı özel bir alanda saklar.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer id="main-footer" class="p-8 border-t border-gray-800 mt-12 sm:mt-16 content-hidden">
+        <div class="max-w-7xl mx-auto text-center text-gray-500 px-4 sm:px-6">
+            <p>&copy; 2025 CipherGuard. Tüm hakları saklıdır. Güvenliğiniz bizim önceliğimizdir.</p>
+        </div>
+    </footer>
+    
+    <!-- Giriş Türü Seçim Modalı -->
+    <div id="initial-selection-modal" class="modal fixed inset-0 bg-black bg-opacity-95 z-[150] flex items-center justify-center">
+        <div class="bg-gray-800 p-6 sm:p-8 m-4 max-w-lg w-full rounded-xl shadow-2xl border border-red-600 text-center">
+            <i data-lucide="shield-alert" class="w-12 h-12 sm:w-16 sm:h-16 text-red-500 mx-auto mb-4 sm:mb-6"></i>
+            <h3 class="text-2xl sm:text-3xl font-bold text-white mb-4">Güvenli Alana Giriş Yapın</h3>
+            <p class="text-gray-300 mb-6 sm:mb-8 text-sm sm:text-base">CipherGuard paneline erişmek için lütfen giriş yönteminizi seçin.</p>
+
+            <div class="flex flex-col space-y-4">
+                <button onclick="openIndividualLogin()" class="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg glow-button text-base sm:text-lg">
+                    <i data-lucide="lock" class="w-5 h-5"></i>
+                    <span>1. Bireysel Giriş (Ad / Şifre)</span>
+                </button>
+                
+                <button onclick="openCorporateLogin()" class="flex items-center justify-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg text-base sm:text-lg">
+                    <i data-lucide="fingerprint" class="w-5 h-5"></i>
+                    <span>2. Kurumsal Giriş (Parmak İzi)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bireysel Giriş Modalı -->
+    <div id="login-modal" class="modal fixed inset-0 bg-black bg-opacity-70 z-[100] flex items-center justify-center opacity-0 invisible" aria-modal="true" role="dialog">
+        <div class="bg-gray-800 p-6 sm:p-8 m-4 max-w-sm w-full rounded-xl shadow-2xl border border-blue-600 transform scale-95 transition-transform duration-300">
+            <h3 class="text-2xl font-bold text-blue-400 mb-6 text-center">Bireysel Güvenli Giriş</h3>
+            <form onsubmit="handleLogin(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Adınız</label>
+                        <input type="text" id="name" name="name" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500" placeholder="Adınızı giriniz">
+                    </div>
+                    <div>
+                        <label for="surname" class="block text-sm font-medium text-gray-300 mb-1">Soyadınız</label>
+                        <input type="text" id="surname" name="surname" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:ring-blue-500" placeholder="Soyadınızı giriniz">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-300 mb-1">Şifreniz</label>
+                        <input t
